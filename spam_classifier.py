@@ -26,6 +26,28 @@ def log_transform(matrix):
 	for i, instance in enumerate(matrix):
 		matrix[i] = map(log_map, instance)
 	return matrix
+	
+def sigmoid(instance, weights):
+	dot_prod = np.dot(weights.T, instance)
+	exp_val = math.e ** (-1 * dot_prod)
+	denom = 1.0 + exp_val
+
+	return 1/denom
+
+def gradient_descent(learning_rate, input_matrix, results, weights):
+	temp_weights = np.copy(weights)
+
+	for j in xrange(0, len(weights)):
+		sum_likelihood = 0
+		for i in xrange(0, len(input_matrix)):
+			sum_likelihood += (sigmoid(input_matrix[i], weights) - results[i]) * input_matrix[i][j]
+
+		weights[j] = weights[j] - (learning_rate * sum_likelihood)
+
+		if math.fabs(weights[j] - temp_weights[j]) < 0.01:
+			return weights
+	
+	return weights
 
 def init_files():
 	f1 = os.getcwd() + "/spam.traintest.txt"
